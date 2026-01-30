@@ -11,27 +11,32 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
       background-color: #FFFFFF;
       margin: 0;
-      padding: 20px;
-      color: #000000;
+      padding: 0; /* Remove padding to prevent offsets */
+      width: 100%;
+      height: 100vh;
       display: flex;
       flex-direction: column;
-      align-items: center; /* This forces everything to the vertical center */
+      align-items: center;
+      overflow-x: hidden; /* Prevents scrollbar if hints go off screen */
     }
 
     /* HEADER */
     #game-header {
       text-align: center;
-      margin-bottom: 25px;
-      max-width: 600px;
+      margin-top: 20px;
+      margin-bottom: 20px;
+      width: 100%;
     }
     h2 { font-size: 1.8rem; margin: 0 0 10px 0; letter-spacing: -0.5px; }
     p { font-size: 1rem; color: #666; margin: 0; }
 
-    /* RELATIVE CONTAINER */
-    /* This creates a tight box around the grid that we can anchor the hints to */
+    /* THE ANCHOR - This is the "Magic Box" */
+    /* We calculate the exact width of the grid (5 tiles * 46px + 4 gaps * 5px = 250px) */
+    /* We set margin: 0 auto to force it to the dead center */
     #anchor-container {
-      position: relative;
-      display: inline-block; /* Shrinks to fit the grid exactly */
+      width: 250px; 
+      margin: 0 auto; 
+      position: relative; /* Allows hints to hang off the side */
     }
 
     /* GRID */
@@ -66,10 +71,9 @@
 
     /* HINTS COLUMN (FLOATING) */
     #right-column {
-      position: absolute; /* Takes it out of the flow so it doesn't push the grid */
-      left: 100%; /* Pushes it to the right edge of the grid */
+      position: absolute;
+      left: 270px; /* 250px (grid) + 20px (gap) */
       top: 0;
-      margin-left: 20px; /* Adds a gap */
       width: 220px;
       display: flex;
       flex-direction: column;
@@ -90,7 +94,7 @@
     /* SUCCESS POPUP */
     #bio-overlay {
       display: none;
-      position: fixed; /* Ensures it stays on screen */
+      position: fixed;
       top: 50%; 
       left: 50%;
       transform: translate(-50%, -50%);
@@ -119,15 +123,13 @@
     @keyframes fadeIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
 
     /* MOBILE RESPONSIVE */
-    /* On small screens, we stop floating and stack it below */
     @media (max-width: 600px) {
-      #anchor-container { display: flex; flex-direction: column; align-items: center; }
+      #anchor-container { width: 100%; display: flex; flex-direction: column; align-items: center; }
       #right-column {
-        position: static; /* Back to normal flow */
-        margin-left: 0;
-        margin-top: 20px;
+        position: static;
         width: 100%;
-        max-width: 300px;
+        max-width: 250px;
+        margin-top: 20px;
       }
     }
   </style>
