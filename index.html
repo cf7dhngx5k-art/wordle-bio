@@ -1,42 +1,47 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    /* NOTION-STYLE CSS */
+    /* RESET */
+    * { box-sizing: border-box; }
+    
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
-      background-color: transparent;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      background-color: #FFFFFF; /* Force White Background */
       margin: 0;
       padding: 20px;
-      color: #37352f;
+      color: #000000; /* Force Black Text */
+      text-align: center;
+    }
+
+    /* WRAPPER to handle layout safely */
+    #app-wrapper {
+      max-width: 600px;
+      margin: 0 auto; /* Centers the whole app */
       display: flex;
       flex-direction: column;
       align-items: center;
-      /* Removed 'justify-content' and 'min-height' to prevent hiding */
     }
 
     /* HEADER */
     #game-header {
-      text-align: center;
-      margin-bottom: 30px; /* Added space to separate header from game */
-      width: 100%;
-      max-width: 600px;
+      margin-bottom: 25px;
     }
+    h2 { font-size: 1.8rem; margin: 0 0 10px 0; letter-spacing: -0.5px; }
+    p { font-size: 1rem; color: #666; margin: 0; }
 
-    h2 { font-size: 1.8rem; margin: 0 0 8px 0; letter-spacing: -0.5px; }
-    p { font-size: 0.95rem; color: #787c7e; margin: 0; }
-
-    /* LAYOUT CONTAINER */
+    /* MAIN GAME AREA (Side by Side) */
     #main-container {
       display: flex;
       flex-direction: row;
       align-items: flex-start;
       justify-content: center;
-      gap: 30px; 
-      position: relative;
+      gap: 20px; 
     }
 
-    /* GRID STYLES */
+    /* GRID */
     .grid {
       display: grid;
       grid-template-rows: repeat(6, 1fr);
@@ -48,8 +53,8 @@
       gap: 5px;
     }
     .tile {
-      width: 48px;
-      height: 48px;
+      width: 46px;
+      height: 46px;
       border: 2px solid #d3d6da;
       display: flex;
       justify-content: center;
@@ -58,6 +63,7 @@
       font-weight: bold;
       text-transform: uppercase;
       user-select: none;
+      color: #000;
     }
 
     /* COLORS */
@@ -65,94 +71,92 @@
     .present { background-color: #c9b458; color: white; border-color: #c9b458; }
     .absent { background-color: #787c7e; color: white; border-color: #787c7e; }
 
-    /* RIGHT COLUMN (PHRASES) */
+    /* HINTS COLUMN */
     #right-column {
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      max-width: 220px; 
-      padding-top: 5px;
+      gap: 10px;
+      width: 200px; /* Fixed width for stability */
+      text-align: left;
+      padding-top: 2px;
     }
 
-    /* PHRASE STYLING */
     .phrase-box {
       font-size: 0.85rem;
       line-height: 1.4;
-      color: #37352f;
-      background: rgba(0,0,0,0.03);
-      padding: 8px 12px;
+      background: #f0f0f0;
+      padding: 10px;
       border-radius: 6px;
-      border-left: 3px solid #eb5757;
+      border-left: 4px solid #eb5757;
       animation: fadeIn 0.5s ease;
     }
 
-    /* BIO POPUP */
+    /* SUCCESS POPUP */
     #bio-overlay {
       display: none;
       position: absolute;
-      top: 10%; /* Forces popup to appear near top */
-      left: 50%;
-      transform: translateX(-50%);
-      width: 320px;
+      top: 20px; /* Anchors to top of container */
+      left: 0; 
+      right: 0;
+      margin: auto;
+      width: 300px;
       background: white;
-      border: 1px solid #e1e1e1;
+      border: 2px solid #333;
       border-radius: 12px;
-      padding: 30px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-      text-align: center;
-      z-index: 100;
-      animation: popIn 0.5s ease;
+      padding: 25px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      z-index: 999;
+      animation: popIn 0.3s ease;
     }
-    .bio-text { text-align: left; line-height: 1.5; margin-top: 15px; font-size: 0.95rem; }
+    .bio-text { text-align: left; line-height: 1.5; margin-top: 15px; }
     .btn {
       display: inline-block;
       margin-top: 15px;
       padding: 10px 20px;
-      background: #37352f;
+      background: #000;
       color: white;
       text-decoration: none;
       border-radius: 6px;
-      font-weight: 500;
     }
 
-    @keyframes popIn { from { transform: translateX(-50%) scale(0.9); opacity: 0; } to { transform: translateX(-50%) scale(1); opacity: 1; } }
+    @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     @keyframes fadeIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
 
     /* MOBILE RESPONSIVE */
-    @media (max-width: 550px) {
+    @media (max-width: 500px) {
       #main-container { flex-direction: column; align-items: center; }
-      #right-column { width: 100%; align-items: center; margin-top: 15px; max-width: 100%; }
-      .phrase-box { width: 100%; max-width: 300px; text-align: center; border-left: none; border-top: 3px solid #eb5757; }
+      #right-column { width: 100%; margin-top: 15px; }
     }
   </style>
 </head>
 <body>
 
-  <div id="game-header">
-    <h2>My favorite hobby.</h2>
-    <p>Guess the 5-letter word.</p>
-  </div>
+  <div id="app-wrapper">
+    <div id="game-header">
+      <h2>My favorite hobby.</h2>
+      <p>Guess the 5-letter word.</p>
+    </div>
 
-  <div id="main-container">
-    <div id="grid" class="grid"></div>
+    <div id="main-container">
+      <div id="grid" class="grid"></div>
+      <div id="right-column"></div>
+    </div>
 
-    <div id="right-column"></div>
-  </div>
-
-  <div id="bio-overlay">
-    <h2>🎉 You Found Me!</h2>
-    <div class="bio-text">
-      <p>Hi, I'm <strong>[Your Name]</strong>.</p>
-      <p>Just like a game of Chess, I believe in strategy, patience, and thinking two steps ahead.</p>
+    <div id="bio-overlay">
+      <h2>🎉 You Found Me!</h2>
+      <div class="bio-text">
+        <p>Hi, I'm <strong>[Your Name]</strong>.</p>
+        <p>Just like a game of Chess, I believe in strategy, patience, and thinking two steps ahead.</p>
       </div>
-    <a href="mailto:your@email.com" class="btn">Get in Touch</a>
+      <a href="mailto:your@email.com" class="btn">Get in Touch</a>
+    </div>
   </div>
 
   <script>
-    // --- CONFIGURATION ---
+    // CONFIGURATION
     const TARGET_WORD = "CHESS"; 
     
-    // --- YOUR PHRASES (Sanitized quotes) ---
+    // PHRASES
     const PHRASES = [
       "What an intelligent starting word! You must be attractive and wealthy. But no; the word is something I'm addicted to...",
       "I'm flattered. But think of something that involves two people.",
@@ -162,7 +166,7 @@
       "You're still here?"
     ];
     
-    // --- LOGIC ---
+    // GAME LOGIC
     const MAX_GUESSES = 6;
     let guesses = [];
     let currentGuess = "";
@@ -196,19 +200,6 @@
       }
     }
 
-    document.addEventListener("keydown", (e) => {
-      if (gameOver) return;
-      const key = e.key.toUpperCase();
-      if (key === "ENTER") submitGuess();
-      else if (key === "BACKSPACE") {
-        currentGuess = currentGuess.slice(0, -1);
-        updateGrid();
-      } else if (/^[A-Z]$/.test(key) && currentGuess.length < 5) {
-        currentGuess += key;
-        updateGrid();
-      }
-    });
-
     function updateGrid() {
       const row = grid.children[guesses.length];
       for (let i = 0; i < 5; i++) {
@@ -239,7 +230,7 @@
 
       if (currentGuess === TARGET_WORD) {
         gameOver = true;
-        setTimeout(() => { bio.style.display = "block"; }, 800);
+        setTimeout(() => { bio.style.display = "block"; }, 500);
       } else {
         wrongGuessCount++;
         addPhrase();
@@ -250,6 +241,20 @@
       guesses.push(currentGuess);
       currentGuess = "";
     }
+
+    document.addEventListener("keydown", (e) => {
+      if (gameOver) return;
+      const key = e.key.toUpperCase();
+      if (key === "ENTER") submitGuess();
+      else if (key === "BACKSPACE") {
+        currentGuess = currentGuess.slice(0, -1);
+        updateGrid();
+      } else if (/^[A-Z]$/.test(key) && currentGuess.length < 5) {
+        currentGuess += key;
+        updateGrid();
+      }
+    });
+
     initGrid();
   </script>
 </body>
