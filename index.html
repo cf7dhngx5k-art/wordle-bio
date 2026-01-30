@@ -12,14 +12,13 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      min-height: 90vh;
+      /* Removed 'justify-content' and 'min-height' to prevent hiding */
     }
 
     /* HEADER */
     #game-header {
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 30px; /* Added space to separate header from game */
       width: 100%;
       max-width: 600px;
     }
@@ -70,7 +69,7 @@
     #right-column {
       display: flex;
       flex-direction: column;
-      gap: 12px; /* Space between phrases */
+      gap: 12px;
       max-width: 220px; 
       padding-top: 5px;
     }
@@ -80,10 +79,10 @@
       font-size: 0.85rem;
       line-height: 1.4;
       color: #37352f;
-      background: rgba(0,0,0,0.03); /* Very subtle grey box */
+      background: rgba(0,0,0,0.03);
       padding: 8px 12px;
       border-radius: 6px;
-      border-left: 3px solid #eb5757; /* Red accent line */
+      border-left: 3px solid #eb5757;
       animation: fadeIn 0.5s ease;
     }
 
@@ -91,9 +90,9 @@
     #bio-overlay {
       display: none;
       position: absolute;
-      top: 50%;
+      top: 10%; /* Forces popup to appear near top */
       left: 50%;
-      transform: translate(-50%, -50%);
+      transform: translateX(-50%);
       width: 320px;
       background: white;
       border: 1px solid #e1e1e1;
@@ -116,7 +115,7 @@
       font-weight: 500;
     }
 
-    @keyframes popIn { from { transform: translate(-50%, -50%) scale(0.9); opacity: 0; } to { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
+    @keyframes popIn { from { transform: translateX(-50%) scale(0.9); opacity: 0; } to { transform: translateX(-50%) scale(1); opacity: 1; } }
     @keyframes fadeIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
 
     /* MOBILE RESPONSIVE */
@@ -153,14 +152,14 @@
     // --- CONFIGURATION ---
     const TARGET_WORD = "CHESS"; 
     
-    // --- YOUR PHRASES ---
+    // --- YOUR PHRASES (Sanitized quotes) ---
     const PHRASES = [
-      "What an intelligent starting word! You must be attractive and wealthy. But no; the word is something I'm addicted to…",
-      "I’m flattered. But think of something that involves two people.",
+      "What an intelligent starting word! You must be attractive and wealthy. But no; the word is something I'm addicted to...",
+      "I'm flattered. But think of something that involves two people.",
       "Ran out of intelligent guesses I see. Perhaps checkers would be more your style.",
       "Keep trying. You can still be a grandmaster in not giving up.",
       "This is sad. I think it best we go our separate ways.",
-      "You’re still here?"
+      "You're still here?"
     ];
     
     // --- LOGIC ---
@@ -188,9 +187,7 @@
     }
 
     function addPhrase() {
-      // Get the correct phrase based on wrong guess count
       const phraseText = PHRASES[wrongGuessCount - 1];
-
       if (phraseText) {
         const box = document.createElement("div");
         box.className = "phrase-box";
@@ -225,7 +222,6 @@
       const targetArr = TARGET_WORD.split("");
       const guessArr = currentGuess.split("");
 
-      // Coloring Logic
       guessArr.forEach((char, i) => {
         if (char === targetArr[i]) {
           row.children[i].classList.add("correct");
@@ -241,15 +237,12 @@
         }
       });
 
-      // Win Logic
       if (currentGuess === TARGET_WORD) {
         gameOver = true;
         setTimeout(() => { bio.style.display = "block"; }, 800);
       } else {
-        // WRONG GUESS -> SHOW PHRASE
         wrongGuessCount++;
         addPhrase();
-        
         if (guesses.length === MAX_GUESSES - 1) {
           gameOver = true;
         }
