@@ -154,3 +154,125 @@
 
   <div id="bio-overlay">
     <h2>🎉 You Unlocked It!</h2>
+    <div class="bio-text">
+      <p>Hi, I'm <strong>[Your Name]</strong>.</p>
+      <p>I am a creative strategist based in NYC. I turn complex problems into simple stories.</p>
+      </div>
+    <a href="mailto:your@email.com" class="btn">Get in Touch</a>
+  </div>
+
+  <script>
+    // --- CONFIGURATION ---
+    const TARGET_WORD = "DREAM"; 
+    
+    // --- HINTS ---
+    const HINTS = [
+      "It happens at night...",
+      "Starts with D...",
+      "Rhymes with Stream...",
+      "Opposite of Reality...",
+      "Sandman brings it!"
+    ];
+    
+    // --- LOGIC ---
+    const MAX_GUESSES = 6;
+    let guesses = [];
+    let currentGuess = "";
+    let gameOver = false;
+    let wrongGuessCount = 0;
+
+    const grid = document.getElementById("grid");
+    const rightCol = document.getElementById("right-column");
+    const bio = document.getElementById("bio-overlay");
+
+    function initGrid() {
+      for (let i = 0; i < MAX_GUESSES; i++) {
+        let row = document.createElement("div");
+        row.className = "row";
+        for (let j = 0; j < 5; j++) {
+          let tile = document.createElement("div");
+          tile.className = "tile";
+          row.appendChild(tile);
+        }
+        grid.appendChild(row);
+      }
+    }
+
+    function addHint() {
+      if (wrongGuessCount > HINTS.length) return;
+      const hintIndex = wrongGuessCount - 1;
+      const hintText = HINTS[hintIndex];
+
+      if (hintText) {
+        const details = document.createElement("details");
+        details.open = true;
+        const summary = document.createElement("summary");
+        summary.textContent = "Hint " + (hintIndex + 1);
+        const content = document.createElement("div");
+        content.className = "hint-content";
+        content.textContent = hintText;
+        details.appendChild(summary);
+        details.appendChild(content);
+        rightCol.appendChild(details);
+      }
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (gameOver) return;
+      const key = e.key.toUpperCase();
+      if (key === "ENTER") submitGuess();
+      else if (key === "BACKSPACE") {
+        currentGuess = currentGuess.slice(0, -1);
+        updateGrid();
+      } else if (/^[A-Z]$/.test(key) && currentGuess.length < 5) {
+        currentGuess += key;
+        updateGrid();
+      }
+    });
+
+    function updateGrid() {
+      const row = grid.children[guesses.length];
+      for (let i = 0; i < 5; i++) {
+        row.children[i].textContent = currentGuess[i] || "";
+      }
+    }
+
+    function submitGuess() {
+      if (currentGuess.length !== 5) return;
+      const row = grid.children[guesses.length];
+      const targetArr = TARGET_WORD.split("");
+      const guessArr = currentGuess.split("");
+
+      guessArr.forEach((char, i) => {
+        if (char === targetArr[i]) {
+          row.children[i].classList.add("correct");
+          targetArr[i] = null;
+        }
+      });
+      guessArr.forEach((char, i) => {
+        if (!row.children[i].classList.contains("correct") && targetArr.includes(char)) {
+          row.children[i].classList.add("present");
+          targetArr[targetArr.indexOf(char)] = null;
+        } else if (!row.children[i].classList.contains("correct")) {
+          row.children[i].classList.add("absent");
+        }
+      });
+
+      if (currentGuess === TARGET_WORD) {
+        gameOver = true;
+        setTimeout(() => { bio.style.display = "block"; }, 800);
+      } else {
+        wrongGuessCount++;
+        addHint();
+        if (guesses.length === MAX_GUESSES - 1) {
+          alert("Game Over! Word: " + TARGET_WORD);
+          gameOver = true;
+        }
+      }
+      guesses.push(currentGuess);
+      currentGuess = "";
+    }
+    initGrid();
+  </script>
+</body>
+</html>
