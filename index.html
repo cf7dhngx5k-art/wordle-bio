@@ -69,3 +69,195 @@
     /* RIGHT COLUMN (PHRASES) */
     #right-column {
       display: flex;
+      flex-direction: column;
+      gap: 12px; /* Space between phrases */
+      max-width: 220px; 
+      padding-top: 5px;
+    }
+
+    /* PHRASE STYLING */
+    .phrase-box {
+      font-size: 0.85rem;
+      line-height: 1.4;
+      color: #37352f;
+      background: rgba(0,0,0,0.03); /* Very subtle grey box */
+      padding: 8px 12px;
+      border-radius: 6px;
+      border-left: 3px solid #eb5757; /* Red accent line */
+      animation: fadeIn 0.5s ease;
+    }
+
+    /* BIO POPUP */
+    #bio-overlay {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 320px;
+      background: white;
+      border: 1px solid #e1e1e1;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+      text-align: center;
+      z-index: 100;
+      animation: popIn 0.5s ease;
+    }
+    .bio-text { text-align: left; line-height: 1.5; margin-top: 15px; font-size: 0.95rem; }
+    .btn {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 10px 20px;
+      background: #37352f;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 500;
+    }
+
+    @keyframes popIn { from { transform: translate(-50%, -50%) scale(0.9); opacity: 0; } to { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
+
+    /* MOBILE RESPONSIVE */
+    @media (max-width: 550px) {
+      #main-container { flex-direction: column; align-items: center; }
+      #right-column { width: 100%; align-items: center; margin-top: 15px; max-width: 100%; }
+      .phrase-box { width: 100%; max-width: 300px; text-align: center; border-left: none; border-top: 3px solid #eb5757; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="game-header">
+    <h2>My favorite hobby.</h2>
+    <p>Guess the 5-letter word.</p>
+  </div>
+
+  <div id="main-container">
+    <div id="grid" class="grid"></div>
+
+    <div id="right-column"></div>
+  </div>
+
+  <div id="bio-overlay">
+    <h2>🎉 You Found Me!</h2>
+    <div class="bio-text">
+      <p>Hi, I'm <strong>[Your Name]</strong>.</p>
+      <p>Just like a game of Chess, I believe in strategy, patience, and thinking two steps ahead.</p>
+      </div>
+    <a href="mailto:your@email.com" class="btn">Get in Touch</a>
+  </div>
+
+  <script>
+    // --- CONFIGURATION ---
+    const TARGET_WORD = "CHESS"; 
+    
+    // --- YOUR PHRASES ---
+    const PHRASES = [
+      "What an intelligent starting word! You must be attractive and wealthy. But no; the word is something I'm addicted to…",
+      "I’m flattered. But think of something that involves two people.",
+      "Ran out of intelligent guesses I see. Perhaps checkers would be more your style.",
+      "Keep trying. You can still be a grandmaster in not giving up.",
+      "This is sad. I think it best we go our separate ways.",
+      "You’re still here?"
+    ];
+    
+    // --- LOGIC ---
+    const MAX_GUESSES = 6;
+    let guesses = [];
+    let currentGuess = "";
+    let gameOver = false;
+    let wrongGuessCount = 0;
+
+    const grid = document.getElementById("grid");
+    const rightCol = document.getElementById("right-column");
+    const bio = document.getElementById("bio-overlay");
+
+    function initGrid() {
+      for (let i = 0; i < MAX_GUESSES; i++) {
+        let row = document.createElement("div");
+        row.className = "row";
+        for (let j = 0; j < 5; j++) {
+          let tile = document.createElement("div");
+          tile.className = "tile";
+          row.appendChild(tile);
+        }
+        grid.appendChild(row);
+      }
+    }
+
+    function addPhrase() {
+      // Get the correct phrase based on wrong guess count
+      const phraseText = PHRASES[wrongGuessCount - 1];
+
+      if (phraseText) {
+        const box = document.createElement("div");
+        box.className = "phrase-box";
+        box.textContent = phraseText;
+        rightCol.appendChild(box);
+      }
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (gameOver) return;
+      const key = e.key.toUpperCase();
+      if (key === "ENTER") submitGuess();
+      else if (key === "BACKSPACE") {
+        currentGuess = currentGuess.slice(0, -1);
+        updateGrid();
+      } else if (/^[A-Z]$/.test(key) && currentGuess.length < 5) {
+        currentGuess += key;
+        updateGrid();
+      }
+    });
+
+    function updateGrid() {
+      const row = grid.children[guesses.length];
+      for (let i = 0; i < 5; i++) {
+        row.children[i].textContent = currentGuess[i] || "";
+      }
+    }
+
+    function submitGuess() {
+      if (currentGuess.length !== 5) return;
+      const row = grid.children[guesses.length];
+      const targetArr = TARGET_WORD.split("");
+      const guessArr = currentGuess.split("");
+
+      // Coloring Logic
+      guessArr.forEach((char, i) => {
+        if (char === targetArr[i]) {
+          row.children[i].classList.add("correct");
+          targetArr[i] = null;
+        }
+      });
+      guessArr.forEach((char, i) => {
+        if (!row.children[i].classList.contains("correct") && targetArr.includes(char)) {
+          row.children[i].classList.add("present");
+          targetArr[targetArr.indexOf(char)] = null;
+        } else if (!row.children[i].classList.contains("correct")) {
+          row.children[i].classList.add("absent");
+        }
+      });
+
+      // Win Logic
+      if (currentGuess === TARGET_WORD) {
+        gameOver = true;
+        setTimeout(() => { bio.style.display = "block"; }, 800);
+      } else {
+        // WRONG GUESS -> SHOW PHRASE
+        wrongGuessCount++;
+        addPhrase();
+        
+        if (guesses.length === MAX_GUESSES - 1) {
+          gameOver = true;
+        }
+      }
+      guesses.push(currentGuess);
+      currentGuess = "";
+    }
+    initGrid();
+  </script>
+</body>
+</html>
