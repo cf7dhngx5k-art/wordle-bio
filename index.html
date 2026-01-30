@@ -7,45 +7,55 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
       background-color: transparent;
       margin: 0;
-      padding: 10px; /* Reduced padding */
+      padding: 20px;
       color: #37352f;
       display: flex;
       flex-direction: column;
-      align-items: center;
+      align-items: center; /* Centers everything horizontally */
+      justify-content: center;
+      min-height: 90vh;
     }
 
-    h2 { font-size: 1.5rem; margin: 0 0 5px 0; }
-    p { font-size: 0.9rem; color: #787c7e; margin: 0 0 15px 0; }
+    /* HEADER - Explicitly centered */
+    #game-header {
+      text-align: center;
+      margin-bottom: 20px;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    h2 { font-size: 1.8rem; margin: 0 0 8px 0; letter-spacing: -0.5px; }
+    p { font-size: 0.95rem; color: #787c7e; margin: 0; }
 
     /* LAYOUT CONTAINER */
     #main-container {
       display: flex;
-      flex-direction: row; /* FORCE SIDE BY SIDE */
+      flex-direction: row;
       align-items: flex-start;
-      gap: 20px; /* Space between grid and hints */
-      justify-content: center;
-      width: 100%;
+      justify-content: center; /* Keeps grid in middle */
+      gap: 20px; 
+      position: relative; /* Helps stabilize layout */
     }
 
     /* GRID STYLES */
     .grid {
       display: grid;
       grid-template-rows: repeat(6, 1fr);
-      gap: 4px;
+      gap: 5px;
     }
     .row {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
-      gap: 4px;
+      gap: 5px;
     }
     .tile {
-      width: 42px; /* SMALLER TILES TO FIT BETTER */
-      height: 42px;
+      width: 48px;
+      height: 48px;
       border: 2px solid #d3d6da;
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 1.6rem;
+      font-size: 1.8rem;
       font-weight: bold;
       text-transform: uppercase;
       user-select: none;
@@ -60,9 +70,9 @@
     #right-column {
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      padding-top: 5px;
-      min-width: 140px; 
+      gap: 10px;
+      /* Removed min-width so it doesn't take up space when empty */
+      max-width: 200px; 
     }
 
     /* HINT TOGGLES */
@@ -71,8 +81,7 @@
       color: #37352f;
       cursor: pointer;
       animation: fadeIn 0.5s ease;
-      border-left: 2px solid #eb5757; /* Red accent line */
-      padding-left: 8px;
+      white-space: nowrap; /* Keeps hints neat */
     }
     summary {
       list-style: none;
@@ -84,9 +93,10 @@
     summary::-webkit-details-marker { display: none; }
     
     .hint-content {
-      margin-top: 2px;
+      margin-top: 4px;
       color: #555;
       font-style: italic;
+      white-space: normal;
     }
 
     /* BIO POPUP */
@@ -96,36 +106,36 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 85%;
-      max-width: 350px;
+      width: 320px;
       background: white;
       border: 1px solid #e1e1e1;
-      border-radius: 8px;
-      padding: 25px;
+      border-radius: 12px;
+      padding: 30px;
       box-shadow: 0 10px 40px rgba(0,0,0,0.2);
       text-align: center;
       z-index: 100;
       animation: popIn 0.5s ease;
     }
-    .bio-text { text-align: left; line-height: 1.5; margin-top: 15px; font-size: 0.9rem; }
+    .bio-text { text-align: left; line-height: 1.5; margin-top: 15px; font-size: 0.95rem; }
     .btn {
       display: inline-block;
       margin-top: 15px;
-      padding: 8px 16px;
+      padding: 10px 20px;
       background: #37352f;
       color: white;
       text-decoration: none;
-      border-radius: 4px;
+      border-radius: 6px;
+      font-weight: 500;
     }
 
     @keyframes popIn { from { transform: translate(-50%, -50%) scale(0.9); opacity: 0; } to { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
     @keyframes fadeIn { from { opacity: 0; transform: translateX(-5px); } to { opacity: 1; transform: translateX(0); } }
 
-    /* ONLY STACK IF EXTREMELY NARROW (Mobile Phones) */
-    @media (max-width: 450px) {
+    /* MOBILE RESPONSIVE */
+    @media (max-width: 500px) {
       #main-container { flex-direction: column; align-items: center; }
-      #right-column { width: 100%; align-items: center; margin-top: 10px; }
-      details { border-left: none; border-top: 2px solid #eb5757; padding-left: 0; padding-top: 5px; text-align: center; }
+      #right-column { width: 100%; align-items: center; margin-top: 15px; }
+      details { text-align: center; }
     }
   </style>
 </head>
@@ -139,131 +149,8 @@
   <div id="main-container">
     <div id="grid" class="grid"></div>
 
-    <div id="right-column">
-      </div>
+    <div id="right-column"></div>
   </div>
 
   <div id="bio-overlay">
     <h2>🎉 You Unlocked It!</h2>
-    <div class="bio-text">
-      <p>Hi, I'm <strong>[Your Name]</strong>.</p>
-      <p>I am a creative strategist based in NYC.</p>
-      </div>
-    <a href="#" onclick="alert('Scroll down for more!')" class="btn">View Portfolio</a>
-  </div>
-
-  <script>
-    // --- CONFIGURATION ---
-    const TARGET_WORD = "DREAM"; 
-    
-    // --- YOUR HINTS ---
-    const HINTS = [
-      "It happens at night...",
-      "Starts with D...",
-      "Rhymes with Team...",
-      "Opposite of Reality...",
-      "Sandman brings it!"
-    ];
-    
-    // --- LOGIC ---
-    const MAX_GUESSES = 6;
-    let guesses = [];
-    let currentGuess = "";
-    let gameOver = false;
-    let wrongGuessCount = 0;
-
-    const grid = document.getElementById("grid");
-    const rightCol = document.getElementById("right-column");
-    const bio = document.getElementById("bio-overlay");
-
-    function initGrid() {
-      for (let i = 0; i < MAX_GUESSES; i++) {
-        let row = document.createElement("div");
-        row.className = "row";
-        for (let j = 0; j < 5; j++) {
-          let tile = document.createElement("div");
-          tile.className = "tile";
-          row.appendChild(tile);
-        }
-        grid.appendChild(row);
-      }
-    }
-
-    function addHint() {
-      if (wrongGuessCount > HINTS.length) return;
-      const hintIndex = wrongGuessCount - 1;
-      const hintText = HINTS[hintIndex];
-
-      if (hintText) {
-        const details = document.createElement("details");
-        details.open = true;
-        const summary = document.createElement("summary");
-        summary.textContent = "Hint " + (hintIndex + 1);
-        const content = document.createElement("div");
-        content.className = "hint-content";
-        content.textContent = hintText;
-        details.appendChild(summary);
-        details.appendChild(content);
-        rightCol.appendChild(details);
-      }
-    }
-
-    document.addEventListener("keydown", (e) => {
-      if (gameOver) return;
-      const key = e.key.toUpperCase();
-      if (key === "ENTER") submitGuess();
-      else if (key === "BACKSPACE") {
-        currentGuess = currentGuess.slice(0, -1);
-        updateGrid();
-      } else if (/^[A-Z]$/.test(key) && currentGuess.length < 5) {
-        currentGuess += key;
-        updateGrid();
-      }
-    });
-
-    function updateGrid() {
-      const row = grid.children[guesses.length];
-      for (let i = 0; i < 5; i++) {
-        row.children[i].textContent = currentGuess[i] || "";
-      }
-    }
-
-    function submitGuess() {
-      if (currentGuess.length !== 5) return;
-      const row = grid.children[guesses.length];
-      const targetArr = TARGET_WORD.split("");
-      const guessArr = currentGuess.split("");
-
-      guessArr.forEach((char, i) => {
-        if (char === targetArr[i]) {
-          row.children[i].classList.add("correct");
-          targetArr[i] = null;
-        }
-      });
-      guessArr.forEach((char, i) => {
-        if (!row.children[i].classList.contains("correct") && targetArr.includes(char)) {
-          row.children[i].classList.add("present");
-          targetArr[targetArr.indexOf(char)] = null;
-        } else if (!row.children[i].classList.contains("correct")) {
-          row.children[i].classList.add("absent");
-        }
-      });
-
-      if (currentGuess === TARGET_WORD) {
-        gameOver = true;
-        setTimeout(() => { bio.style.display = "block"; }, 800);
-      } else {
-        wrongGuessCount++;
-        addHint();
-        if (guesses.length === MAX_GUESSES - 1) {
-          alert("Game Over! Word: " + TARGET_WORD);
-          gameOver = true;
-        }
-      }
-      guesses.push(currentGuess);
-      currentGuess = "";
-    }
-    initGrid();
-  </script>
-</body>
-</html>
