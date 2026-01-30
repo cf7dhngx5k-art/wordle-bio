@@ -1,17 +1,182 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE html>
 <html>
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2575.7">
-  <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Times; -webkit-text-stroke: #000000}
-    span.s1 {font-kerning: none}
+  <style>
+    /* NOTION-STYLE CSS */
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
+      background-color: transparent;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0;
+      padding: 20px;
+      color: #37352f;
+    }
+
+    h2 { font-size: 1.5rem; margin-bottom: 10px; }
+    p { font-size: 0.9rem; color: #787c7e; margin-bottom: 20px; }
+
+    /* GRID STYLES */
+    .grid {
+      display: grid;
+      grid-template-rows: repeat(6, 1fr);
+      gap: 5px;
+      margin-bottom: 20px;
+    }
+    .row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 5px;
+    }
+    .tile {
+      width: 52px;
+      height: 52px;
+      border: 2px solid #d3d6da;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      user-select: none;
+    }
+
+    /* COLORS */
+    .correct { background-color: #6aaa64; color: white; border-color: #6aaa64; }
+    .present { background-color: #c9b458; color: white; border-color: #c9b458; }
+    .absent { background-color: #787c7e; color: white; border-color: #787c7e; }
+
+    /* BIO REVEAL */
+    #bio-container {
+      display: none; /* Hidden initially */
+      text-align: center;
+      background: white;
+      border: 1px solid #e1e1e1;
+      border-radius: 8px;
+      padding: 20px;
+      max-width: 400px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      animation: popIn 0.5s ease;
+    }
+    
+    .bio-text { text-align: left; line-height: 1.6; }
+    .btn {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 8px 16px;
+      background: #37352f;
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+
+    @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
   </style>
 </head>
 <body>
-<p class="p1"><span class="s1">&lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;style&gt; /* NOTION-STYLE CSS */ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; background-color: transparent; /* Blends with Notion */ display: flex; flex-direction: column; align-items: center; margin: 0; padding: 20px; color: #37352f; } h2 { font-size: 1.5rem; margin-bottom: 10px; } p { font-size: 0.9rem; color: #787c7e; margin-bottom: 20px; } /* GRID STYLES */ .grid { display: grid; grid-template-rows: repeat(6, 1fr); gap: 5px; margin-bottom: 20px; } .row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; } .tile { width: 52px; height: 52px; border: 2px solid #d3d6da; display: flex; justify-content: center; align-items: center; font-size: 2rem; font-weight: bold; text-transform: uppercase; user-select: none; } /* COLORS */ .correct { background-color: #6aaa64; color: white; border-color: #6aaa64; } .present { background-color: #c9b458; color: white; border-color: #c9b458; } .absent { background-color: #787c7e; color: white; border-color: #787c7e; } /* BIO REVEAL */ #bio-container { display: none; /* Hidden initially */ text-align: center; background: white; border: 1px solid #e1e1e1; border-radius: 8px; padding: 20px; max-width: 400px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); animation: popIn 0.5s ease; } .bio-text { text-align: left; line-height: 1.6; } .btn { display: inline-block; margin-top: 10px; padding: 8px 16px; background: #37352f; color: white; text-decoration: none; border-radius: 4px; font-size: 0.9rem; } @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } } &lt;/style&gt; &lt;/head&gt; &lt;body&gt; &lt;div id="game-header"&gt; &lt;h2&gt;Unlock My Bio&lt;/h2&gt; &lt;p&gt;Guess the 5-letter word that describes me.&lt;/p&gt; &lt;/div&gt; &lt;div id="grid" class="grid"&gt;&lt;/div&gt; &lt;div id="bio-container"&gt; &lt;h2&gt;🎉 You Unlocked It!&lt;/h2&gt; &lt;div class="bio-text"&gt; &lt;p&gt;Hi, I'm &lt;strong&gt;[Your Name]&lt;/strong&gt;.&lt;/p&gt; &lt;p&gt;I am a creative strategist based in NYC. I love building digital experiences that connect people.&lt;/p&gt; &lt;p&gt;&lt;em&gt;Check out my projects below!&lt;/em&gt;&lt;/p&gt; &lt;/div&gt; &lt;a href="#" onclick="alert('Scroll down to see more!')" class="btn"&gt;Explore My Work&lt;/a&gt; &lt;/div&gt; &lt;script&gt; // --- CONFIGURATION --- const TARGET_WORD = “CHESS”; // CHANGE THIS WORD (MUST BE 5 LETTERS) // --- GAME LOGIC --- const MAX_GUESSES = 6; let guesses = []; let currentGuess = ""; let gameOver = false; const grid = document.getElementById("grid"); const bio = document.getElementById("bio-container"); const header = document.getElementById("game-header"); function initGrid() { for (let i = 0; i &lt; MAX_GUESSES; i++) { let row = document.createElement("div"); row.className = "row"; for (let j = 0; j &lt; 5; j++) { let tile = document.createElement("div"); tile.className = "tile"; row.appendChild(tile); } grid.appendChild(row); } } document.addEventListener("keydown", (e) =&gt; { if (gameOver) return; const key = e.key.toUpperCase(); if (key === "ENTER") submitGuess(); else if (key === "BACKSPACE") { currentGuess = currentGuess.slice(0, -1); updateGrid(); } else if (/^[A-Z]$/.test(key) &amp;&amp; currentGuess.length &lt; 5) { currentGuess += key; updateGrid(); } }); function updateGrid() { const row = grid.children[guesses.length]; for (let i = 0; i &lt; 5; i++) { row.children[i].textContent = currentGuess[i] || ""; } } function submitGuess() { if (currentGuess.length !== 5) return; const row = grid.children[guesses.length]; const targetArr = TARGET_WORD.split(""); const guessArr = currentGuess.split(""); // Logic for colors guessArr.forEach((char, i) =&gt; { if (char === targetArr[i]) { row.children[i].classList.add("correct"); targetArr[i] = null; } }); guessArr.forEach((char, i) =&gt; { if (!row.children[i].classList.contains("correct") &amp;&amp; targetArr.includes(char)) { row.children[i].classList.add("present"); targetArr[targetArr.indexOf(char)] = null; } else if (!row.children[i].classList.contains("correct")) { row.children[i].classList.add("absent"); } }); if (currentGuess === TARGET_WORD) { gameOver = true; setTimeout(() =&gt; { header.style.display = "none"; grid.style.display = "none"; bio.style.display = "block"; }, 800); } else if (guesses.length === MAX_GUESSES - 1) { alert("Game Over! The word was " + TARGET_WORD); gameOver = true; } guesses.push(currentGuess); currentGuess = ""; } initGrid(); &lt;/script&gt; &lt;/body&gt; &lt;/html&gt;</span></p>
+
+  <div id="game-header">
+    <h2>Unlock My Bio</h2>
+    <p>Guess the 5-letter word that describes me.</p>
+  </div>
+
+  <div id="grid" class="grid"></div>
+
+  <div id="bio-container">
+    <h2>🎉 You Unlocked It!</h2>
+    <div class="bio-text">
+      <p>Hi, I'm <strong>[Your Name]</strong>.</p>
+      <p>I am a creative strategist based in NYC. I love building digital experiences that connect people.</p>
+      <p><em>Check out my projects below!</em></p>
+      </div>
+    <a href="#" onclick="alert('Scroll down to see more!')" class="btn">Explore My Work</a>
+  </div>
+
+  <script>
+    // --- CONFIGURATION ---
+    const TARGET_WORD = "CHESS"; // CHANGE THIS WORD (MUST BE 5 LETTERS)
+    
+    // --- GAME LOGIC ---
+    const MAX_GUESSES = 6;
+    let guesses = [];
+    let currentGuess = "";
+    let gameOver = false;
+    const grid = document.getElementById("grid");
+    const bio = document.getElementById("bio-container");
+    const header = document.getElementById("game-header");
+
+    function initGrid() {
+      for (let i = 0; i < MAX_GUESSES; i++) {
+        let row = document.createElement("div");
+        row.className = "row";
+        for (let j = 0; j < 5; j++) {
+          let tile = document.createElement("div");
+          tile.className = "tile";
+          row.appendChild(tile);
+        }
+        grid.appendChild(row);
+      }
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (gameOver) return;
+      const key = e.key.toUpperCase();
+      if (key === "ENTER") submitGuess();
+      else if (key === "BACKSPACE") {
+        currentGuess = currentGuess.slice(0, -1);
+        updateGrid();
+      } else if (/^[A-Z]$/.test(key) && currentGuess.length < 5) {
+        currentGuess += key;
+        updateGrid();
+      }
+    });
+
+    function updateGrid() {
+      const row = grid.children[guesses.length];
+      for (let i = 0; i < 5; i++) {
+        row.children[i].textContent = currentGuess[i] || "";
+      }
+    }
+
+    function submitGuess() {
+      if (currentGuess.length !== 5) return;
+      const row = grid.children[guesses.length];
+      const targetArr = TARGET_WORD.split("");
+      const guessArr = currentGuess.split("");
+
+      // Logic for colors
+      guessArr.forEach((char, i) => {
+        if (char === targetArr[i]) {
+          row.children[i].classList.add("correct");
+          targetArr[i] = null;
+        }
+      });
+      guessArr.forEach((char, i) => {
+        if (!row.children[i].classList.contains("correct") && targetArr.includes(char)) {
+          row.children[i].classList.add("present");
+          targetArr[targetArr.indexOf(char)] = null;
+        } else if (!row.children[i].classList.contains("correct")) {
+          row.children[i].classList.add("absent");
+        }
+      });
+
+      if (currentGuess === TARGET_WORD) {
+        gameOver = true;
+        setTimeout(() => {
+          header.style.display = "none";
+          grid.style.display = "none";
+          bio.style.display = "block";
+        }, 800);
+      } else if (guesses.length === MAX_GUESSES - 1) {
+        alert("Game Over! The word was " + TARGET_WORD);
+        gameOver = true;
+      }
+      guesses.push(currentGuess);
+      currentGuess = "";
+    }
+    initGrid();
+  </script>
 </body>
 </html>
