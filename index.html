@@ -7,43 +7,45 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
       background-color: transparent;
       margin: 0;
-      padding: 20px;
+      padding: 10px; /* Reduced padding */
       color: #37352f;
       display: flex;
       flex-direction: column;
       align-items: center;
     }
 
-    h2 { font-size: 1.5rem; margin: 0 0 10px 0; }
-    p { font-size: 0.9rem; color: #787c7e; margin: 0 0 20px 0; }
+    h2 { font-size: 1.5rem; margin: 0 0 5px 0; }
+    p { font-size: 0.9rem; color: #787c7e; margin: 0 0 15px 0; }
 
-    /* LAYOUT CONTAINER (Side-by-Side) */
+    /* LAYOUT CONTAINER */
     #main-container {
       display: flex;
-      flex-direction: row; /* Puts items side by side */
+      flex-direction: row; /* FORCE SIDE BY SIDE */
       align-items: flex-start;
-      gap: 30px; /* Space between grid and hints */
+      gap: 20px; /* Space between grid and hints */
+      justify-content: center;
+      width: 100%;
     }
 
     /* GRID STYLES */
     .grid {
       display: grid;
       grid-template-rows: repeat(6, 1fr);
-      gap: 5px;
+      gap: 4px;
     }
     .row {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
-      gap: 5px;
+      gap: 4px;
     }
     .tile {
-      width: 50px;
-      height: 50px;
+      width: 42px; /* SMALLER TILES TO FIT BETTER */
+      height: 42px;
       border: 2px solid #d3d6da;
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 1.8rem;
+      font-size: 1.6rem;
       font-weight: bold;
       text-transform: uppercase;
       user-select: none;
@@ -58,60 +60,54 @@
     #right-column {
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      min-width: 150px; /* Ensures hints don't get squished */
+      gap: 8px;
+      padding-top: 5px;
+      min-width: 140px; 
     }
 
     /* HINT TOGGLES */
     details {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       color: #37352f;
       cursor: pointer;
       animation: fadeIn 0.5s ease;
+      border-left: 2px solid #eb5757; /* Red accent line */
+      padding-left: 8px;
     }
     summary {
       list-style: none;
       display: flex;
       align-items: center;
-      font-weight: 500;
-      color: #eb5757; /* Red color for attention */
+      font-weight: 600;
+      color: #eb5757;
     }
     summary::-webkit-details-marker { display: none; }
-    summary::before {
-      content: "▶";
-      font-size: 0.7rem;
-      margin-right: 8px;
-      transition: transform 0.2s;
-    }
-    details[open] summary::before { transform: rotate(90deg); }
     
     .hint-content {
-      margin-top: 4px;
-      padding-left: 18px;
+      margin-top: 2px;
       color: #555;
       font-style: italic;
-      font-size: 0.85rem;
     }
 
-    /* BIO REVEAL (Overlays everything on win) */
+    /* BIO POPUP */
     #bio-overlay {
       display: none;
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 90%;
-      max-width: 400px;
+      width: 85%;
+      max-width: 350px;
       background: white;
       border: 1px solid #e1e1e1;
       border-radius: 8px;
-      padding: 30px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      padding: 25px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
       text-align: center;
       z-index: 100;
       animation: popIn 0.5s ease;
     }
-    .bio-text { text-align: left; line-height: 1.6; margin-top: 15px; }
+    .bio-text { text-align: left; line-height: 1.5; margin-top: 15px; font-size: 0.9rem; }
     .btn {
       display: inline-block;
       margin-top: 15px;
@@ -123,12 +119,13 @@
     }
 
     @keyframes popIn { from { transform: translate(-50%, -50%) scale(0.9); opacity: 0; } to { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateX(-5px); } to { opacity: 1; transform: translateX(0); } }
 
-    /* MOBILE RESPONSIVENESS */
-    @media (max-width: 600px) {
+    /* ONLY STACK IF EXTREMELY NARROW (Mobile Phones) */
+    @media (max-width: 450px) {
       #main-container { flex-direction: column; align-items: center; }
-      #right-column { width: 100%; align-items: center; }
+      #right-column { width: 100%; align-items: center; margin-top: 10px; }
+      details { border-left: none; border-top: 2px solid #eb5757; padding-left: 0; padding-top: 5px; text-align: center; }
     }
   </style>
 </head>
@@ -150,26 +147,25 @@
     <h2>🎉 You Unlocked It!</h2>
     <div class="bio-text">
       <p>Hi, I'm <strong>[Your Name]</strong>.</p>
-      <p>I am a creative strategist based in NYC. I love building digital experiences that connect people.</p>
+      <p>I am a creative strategist based in NYC.</p>
       </div>
-    <a href="#" onclick="alert('Scroll down to see more!')" class="btn">Explore My Work</a>
+    <a href="#" onclick="alert('Scroll down for more!')" class="btn">View Portfolio</a>
   </div>
 
   <script>
     // --- CONFIGURATION ---
     const TARGET_WORD = "DREAM"; 
     
-    // --- YOUR HINTS LIST ---
-    // Add as many as you like. They appear in order (1st wrong guess = 1st hint).
+    // --- YOUR HINTS ---
     const HINTS = [
-      "Hint 1: It happens at night...",
-      "Hint 2: It starts with the letter D...",
-      "Hint 3: Use the Sandman...",
-      "Hint 4: Opposite of reality...",
-      "Hint 5: Rhymes with Stream!"
+      "It happens at night...",
+      "Starts with D...",
+      "Rhymes with Team...",
+      "Opposite of Reality...",
+      "Sandman brings it!"
     ];
     
-    // --- GAME LOGIC ---
+    // --- LOGIC ---
     const MAX_GUESSES = 6;
     let guesses = [];
     let currentGuess = "";
@@ -179,8 +175,6 @@
     const grid = document.getElementById("grid");
     const rightCol = document.getElementById("right-column");
     const bio = document.getElementById("bio-overlay");
-    const header = document.getElementById("game-header");
-    const mainContainer = document.getElementById("main-container");
 
     function initGrid() {
       for (let i = 0; i < MAX_GUESSES; i++) {
@@ -195,24 +189,19 @@
       }
     }
 
-    // Add a new hint to the right column
     function addHint() {
-      if (wrongGuessCount > HINTS.length) return; // No more hints defined
-      
+      if (wrongGuessCount > HINTS.length) return;
       const hintIndex = wrongGuessCount - 1;
       const hintText = HINTS[hintIndex];
 
       if (hintText) {
         const details = document.createElement("details");
-        details.open = true; // Automatically open the hint? Set to false if you want them closed.
-        
+        details.open = true;
         const summary = document.createElement("summary");
         summary.textContent = "Hint " + (hintIndex + 1);
-        
         const content = document.createElement("div");
         content.className = "hint-content";
         content.textContent = hintText;
-
         details.appendChild(summary);
         details.appendChild(content);
         rightCol.appendChild(details);
@@ -245,7 +234,6 @@
       const targetArr = TARGET_WORD.split("");
       const guessArr = currentGuess.split("");
 
-      // Logic for colors
       guessArr.forEach((char, i) => {
         if (char === targetArr[i]) {
           row.children[i].classList.add("correct");
@@ -263,16 +251,12 @@
 
       if (currentGuess === TARGET_WORD) {
         gameOver = true;
-        setTimeout(() => {
-          bio.style.display = "block"; // Show Popup
-        }, 800);
+        setTimeout(() => { bio.style.display = "block"; }, 800);
       } else {
-        // WRONG GUESS -> SHOW NEXT HINT
         wrongGuessCount++;
         addHint();
-        
         if (guesses.length === MAX_GUESSES - 1) {
-          alert("Game Over! The word was " + TARGET_WORD);
+          alert("Game Over! Word: " + TARGET_WORD);
           gameOver = true;
         }
       }
