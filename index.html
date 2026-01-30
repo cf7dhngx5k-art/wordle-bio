@@ -9,36 +9,29 @@
     
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-      background-color: #FFFFFF; /* Force White Background */
+      background-color: #FFFFFF;
       margin: 0;
       padding: 20px;
-      color: #000000; /* Force Black Text */
-      text-align: center;
-    }
-
-    /* WRAPPER to handle layout safely */
-    #app-wrapper {
-      max-width: 600px;
-      margin: 0 auto; /* Centers the whole app */
+      color: #000000;
       display: flex;
       flex-direction: column;
-      align-items: center;
+      align-items: center; /* This forces everything to the vertical center */
     }
 
     /* HEADER */
     #game-header {
+      text-align: center;
       margin-bottom: 25px;
+      max-width: 600px;
     }
     h2 { font-size: 1.8rem; margin: 0 0 10px 0; letter-spacing: -0.5px; }
     p { font-size: 1rem; color: #666; margin: 0; }
 
-    /* MAIN GAME AREA (Side by Side) */
-    #main-container {
-      display: flex;
-      flex-direction: row;
-      align-items: flex-start;
-      justify-content: center;
-      gap: 20px; 
+    /* RELATIVE CONTAINER */
+    /* This creates a tight box around the grid that we can anchor the hints to */
+    #anchor-container {
+      position: relative;
+      display: inline-block; /* Shrinks to fit the grid exactly */
     }
 
     /* GRID */
@@ -71,14 +64,17 @@
     .present { background-color: #c9b458; color: white; border-color: #c9b458; }
     .absent { background-color: #787c7e; color: white; border-color: #787c7e; }
 
-    /* HINTS COLUMN */
+    /* HINTS COLUMN (FLOATING) */
     #right-column {
+      position: absolute; /* Takes it out of the flow so it doesn't push the grid */
+      left: 100%; /* Pushes it to the right edge of the grid */
+      top: 0;
+      margin-left: 20px; /* Adds a gap */
+      width: 220px;
       display: flex;
       flex-direction: column;
       gap: 10px;
-      width: 200px; /* Fixed width for stability */
       text-align: left;
-      padding-top: 2px;
     }
 
     .phrase-box {
@@ -94,11 +90,10 @@
     /* SUCCESS POPUP */
     #bio-overlay {
       display: none;
-      position: absolute;
-      top: 20px; /* Anchors to top of container */
-      left: 0; 
-      right: 0;
-      margin: auto;
+      position: fixed; /* Ensures it stays on screen */
+      top: 50%; 
+      left: 50%;
+      transform: translate(-50%, -50%);
       width: 300px;
       background: white;
       border: 2px solid #333;
@@ -107,6 +102,7 @@
       box-shadow: 0 10px 30px rgba(0,0,0,0.3);
       z-index: 999;
       animation: popIn 0.3s ease;
+      text-align: center;
     }
     .bio-text { text-align: left; line-height: 1.5; margin-top: 15px; }
     .btn {
@@ -119,37 +115,41 @@
       border-radius: 6px;
     }
 
-    @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    @keyframes popIn { from { transform: translate(-50%, -50%) scale(0.9); opacity: 0; } to { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
     @keyframes fadeIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
 
     /* MOBILE RESPONSIVE */
-    @media (max-width: 500px) {
-      #main-container { flex-direction: column; align-items: center; }
-      #right-column { width: 100%; margin-top: 15px; }
+    /* On small screens, we stop floating and stack it below */
+    @media (max-width: 600px) {
+      #anchor-container { display: flex; flex-direction: column; align-items: center; }
+      #right-column {
+        position: static; /* Back to normal flow */
+        margin-left: 0;
+        margin-top: 20px;
+        width: 100%;
+        max-width: 300px;
+      }
     }
   </style>
 </head>
 <body>
 
-  <div id="app-wrapper">
-    <div id="game-header">
-      <h2>My favorite hobby.</h2>
-      <p>Guess the 5-letter word.</p>
-    </div>
+  <div id="game-header">
+    <h2>My favorite hobby.</h2>
+    <p>Guess the 5-letter word.</p>
+  </div>
 
-    <div id="main-container">
-      <div id="grid" class="grid"></div>
-      <div id="right-column"></div>
-    </div>
+  <div id="anchor-container">
+    <div id="grid" class="grid"></div>
+    <div id="right-column"></div> </div>
 
-    <div id="bio-overlay">
-      <h2>🎉 You Found Me!</h2>
-      <div class="bio-text">
-        <p>Hi, I'm <strong>[Your Name]</strong>.</p>
-        <p>Just like a game of Chess, I believe in strategy, patience, and thinking two steps ahead.</p>
-      </div>
-      <a href="mailto:your@email.com" class="btn">Get in Touch</a>
+  <div id="bio-overlay">
+    <h2>🎉 You Found Me!</h2>
+    <div class="bio-text">
+      <p>Hi, I'm <strong>[Your Name]</strong>.</p>
+      <p>Just like a game of Chess, I believe in strategy, patience, and thinking two steps ahead.</p>
     </div>
+    <a href="mailto:your@email.com" class="btn">Get in Touch</a>
   </div>
 
   <script>
