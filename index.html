@@ -11,13 +11,13 @@
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
       background-color: #FFFFFF;
       margin: 0;
-      padding: 0; /* Remove padding to prevent offsets */
+      padding: 0;
       width: 100%;
       height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      overflow-x: hidden; /* Prevents scrollbar if hints go off screen */
+      overflow-x: auto; 
     }
 
     /* HEADER */
@@ -26,17 +26,17 @@
       margin-top: 20px;
       margin-bottom: 20px;
       width: 100%;
+      padding: 0 10px;
     }
     h2 { font-size: 1.8rem; margin: 0 0 10px 0; letter-spacing: -0.5px; }
     p { font-size: 1rem; color: #666; margin: 0; }
 
-    /* THE ANCHOR - This is the "Magic Box" */
-    /* We calculate the exact width of the grid (5 tiles * 46px + 4 gaps * 5px = 250px) */
-    /* We set margin: 0 auto to force it to the dead center */
+    /* ANCHOR CONTAINER */
     #anchor-container {
       width: 250px; 
       margin: 0 auto; 
-      position: relative; /* Allows hints to hang off the side */
+      position: relative; 
+      overflow: visible; 
     }
 
     /* GRID */
@@ -69,12 +69,12 @@
     .present { background-color: #c9b458; color: white; border-color: #c9b458; }
     .absent { background-color: #787c7e; color: white; border-color: #787c7e; }
 
-    /* HINTS COLUMN (FLOATING) */
+    /* HINTS COLUMN */
     #right-column {
       position: absolute;
-      left: 270px; /* 250px (grid) + 20px (gap) */
+      left: 265px; 
       top: 0;
-      width: 220px;
+      width: 180px; 
       display: flex;
       flex-direction: column;
       gap: 10px;
@@ -82,13 +82,14 @@
     }
 
     .phrase-box {
-      font-size: 0.85rem;
-      line-height: 1.4;
+      font-size: 0.8rem; 
+      line-height: 1.3;
       background: #f0f0f0;
       padding: 10px;
       border-radius: 6px;
       border-left: 4px solid #eb5757;
       animation: fadeIn 0.5s ease;
+      word-wrap: break-word; 
     }
 
     /* SUCCESS POPUP */
@@ -108,7 +109,13 @@
       animation: popIn 0.3s ease;
       text-align: center;
     }
-    .bio-text { text-align: left; line-height: 1.5; margin-top: 15px; }
+    .bio-text { 
+      text-align: center; 
+      line-height: 1.5; 
+      margin-top: 15px; 
+      font-weight: 500;
+      font-size: 1.1rem;
+    }
     .btn {
       display: inline-block;
       margin-top: 15px;
@@ -117,13 +124,14 @@
       color: white;
       text-decoration: none;
       border-radius: 6px;
+      font-size: 1.5rem; /* Made emoji larger */
     }
 
     @keyframes popIn { from { transform: translate(-50%, -50%) scale(0.9); opacity: 0; } to { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
     @keyframes fadeIn { from { opacity: 0; transform: translateX(10px); } to { opacity: 1; transform: translateX(0); } }
 
     /* MOBILE RESPONSIVE */
-    @media (max-width: 600px) {
+    @media (max-width: 500px) {
       #anchor-container { width: 100%; display: flex; flex-direction: column; align-items: center; }
       #right-column {
         position: static;
@@ -143,22 +151,20 @@
 
   <div id="anchor-container">
     <div id="grid" class="grid"></div>
-    <div id="right-column"></div> </div>
+    <div id="right-column"></div>
+  </div>
 
   <div id="bio-overlay">
-    <h2>🎉 You Found Me!</h2>
+    <h2>Nailed it!</h2>
     <div class="bio-text">
-      <p>Hi, I'm <strong>[Your Name]</strong>.</p>
-      <p>Just like a game of Chess, I believe in strategy, patience, and thinking two steps ahead.</p>
+      <p>Add me on chess.com<br>@Maxwell99 😤</p>
     </div>
-    <a href="mailto:your@email.com" class="btn">Get in Touch</a>
+    <a href="https://link.chess.com/friend/zyYvAH" target="_blank" class="btn">♟️</a>
   </div>
 
   <script>
-    // CONFIGURATION
     const TARGET_WORD = "CHESS"; 
     
-    // PHRASES
     const PHRASES = [
       "What an intelligent starting word! You must be attractive and wealthy. But no; the word is something I'm addicted to...",
       "I'm flattered. But think of something that involves two people.",
@@ -168,7 +174,6 @@
       "You're still here?"
     ];
     
-    // GAME LOGIC
     const MAX_GUESSES = 6;
     let guesses = [];
     let currentGuess = "";
